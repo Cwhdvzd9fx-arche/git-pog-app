@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "name": "sneaker-tracker",
+  "version": "1.0.0",
+  "description": "Plateforme de suivi des tendances de sneakers en temps réel - Monorepo",
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci",
+    "audit": "turbo run audit",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "backup:db": "bash scripts/backup-supabase.sh",
+    "restore:db": "bash scripts/restore-supabase.sh"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.1.0",
+    "eslint": "^8.51.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

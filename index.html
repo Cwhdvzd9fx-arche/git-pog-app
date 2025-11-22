@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Gestion du Temps d'Écran & Productivité</title>
+
+<style>
+
+  /* Reset minimal */
+
+  * {
+
+    box-sizing: border-box;
+
+  }
+
+  body {
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    background: #f8f5ef;
+
+    color: #333;
+
+    margin: 0; padding: 0;
+
+    max-width: 900px;
+
+    margin-left: auto; margin-right: auto;
+
+  }
+
+
+
+  header {
+
+    background-color: #d4c6a6;
+
+    padding: 1.2rem;
+
+    text-align: center;
+
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
+
+  }
+
+  header h1 {
+
+    margin: 0;
+
+    font-weight: 700;
+
+    color: #4b4539;
+
+    font-size: 2rem;
+
+    letter-spacing: 1px;
+
+    user-select:none;
+
+  }
+
+
+
+  main {
+
+    padding: 1.5rem 1rem 3rem 1rem;
+
+  }
+
+
+
+  /* Section common styles */
+
+  section {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 1.5rem 2rem;
+
+    margin-bottom: 2rem;
+
+    box-shadow: 0 0 15px rgb(0 0 0 / 0.05);
+
+    transition: box-shadow 0.3s ease;
+
+  }
+
+  section:hover {
+
+    box-shadow: 0 0 25px rgb(0 0 0 / 0.12);
+
+  }
+
+
+
+  h2 {
+
+    font-weight: 600;
+
+    color: #6b5e3c;
+
+    margin-top: 0;
+
+    margin-bottom: 1rem;
+
+    user-select:none;
+
+  }
+
+
+
+  /* Layout: tabs */
+
+  .tabs {
+
+    display: flex;
+
+    margin-bottom: 1.5rem;
+
+    gap: 1.5rem;
+
+    justify-content: center;
+
+  }
+
+  .tabs button {
+
+    background-color: #d4c6a6;
+
+    border: none;
+
+    color: #4b4539;
+
+    padding: 0.6rem 1.6rem;
+
+    cursor: pointer;
+
+    border-radius: 25px;
+
+    font-weight: 600;
+
+    font-size: 1.1rem;
+
+    user-select:none;
+
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+
+  }
+
+  .tabs button.active,
+
+  .tabs button:hover {
+
+    background-color: #b9ad7f;
+
+    color: #362f1f;
+
+  }
+
+
+
+  /* Containers for each section */
+
+  .content-section {
+
+    display: none;
+
+  }
+
+  .content-section.active {
+
+    display: block;
+
+  }
+
+
+
+  /* ==== GESTION DU TEMPS D'ECRAN === */
+
+
+
+  .time-input-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    max-width: 400px;
+
+    margin-bottom: 1rem;
+
+  }
+
+
+
+  .time-input-row label {
+
+    font-weight: 600;
+
+    min-width: 130px;
+
+  }
+
+  input[type=number] {
+
+    width: 80px;
+
+    padding: 0.4rem 0.6rem;
+
+    font-size: 1rem;
+
+    border-radius: 6px;
+
+    border: 1.5px solid #b9ad7f;
+
+    transition: border-color 0.3s ease;
+
+    user-select:none;
+
+  }
+
+  input[type=number]:focus {
+
+    outline: none;
+
+    border-color: #928953;
+
+  }
+
+  button#addTimeBtn {
+
+    background-color: #928953;
+
+    color: white;
+
+    border-radius: 6px;
+
+    font-weight: 600;
+
+    padding: 0.5rem 1rem;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  button#addTimeBtn:hover {
+
+    background-color: #6b5e3c;
+
+  }
+
+  p#totalTimeDisplay {
+
+    font-weight: 700;
+
+    font-size: 1.3rem;
+
+    margin: 0;
+
+  }
+
+
+
+  #alertMessage {
+
+    margin-top: 0.4rem;
+
+    font-weight: 700;
+
+    color: #b94949;
+
+  }
+
+
+
+  /* ==== AGENDA ====
+
+
+
+  Table layout with multiple tasks per day */
+
+
+
+  #agendaTable {
+
+    width: 100%;
+
+    border-collapse: separate;
+
+    border-spacing: 0 12px;
+
+  }
+
+
+
+  #agendaTable thead th {
+
+    padding: 0.8rem 1rem;
+
+    text-align: left;
+
+    background-color: #d4c6a6;
+
+    color: #4b4539;
+
+    font-weight: 700;
+
+    border-radius: 10px 10px 0 0;
+
+    user-select:none;
+
+  }
+
+
+
+  #agendaTable tbody tr {
+
+    background-color: #faf7f0;
+
+    border-radius: 8px;
+
+  }
+
+  #agendaTable tbody td {
+
+    padding: 1rem 1rem;
+
+    vertical-align: top;
+
+  }
+
+
+
+  .day-cell {
+
+    font-weight: 600;
+
+    font-size: 1.1rem;
+
+    color: #6b5e3c;
+
+    user-select:none;
+
+    width: 120px;
+
+  }
+
+
+
+  /* Tasks list for each day */
+
+  .tasks-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.6rem;
+
+  }
+
+
+
+  .task-item {
+
+    background: #eee9da;
+
+    border-radius: 8px;
+
+    padding: 0.5rem 0.8rem;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.8rem;
+
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+
+  }
+
+
+
+  .task-item.done {
+
+    background: #b7dbb7;
+
+    text-decoration: line-through;
+
+    color: #3d5a3d;
+
+  }
+
+
+
+  .task-item input[type="checkbox"] {
+
+    width: 18px;
+
+    height: 18px;
+
+    cursor: pointer;
+
+  }
+
+  .task-item .task-title {
+
+    flex-grow: 1;
+
+    user-select:none;
+
+  }
+
+
+
+  .task-item select {
+
+    padding: 0.15rem 0.4rem;
+
+    border-radius: 6px;
+
+    border: 1px solid #a8a072;
+
+    font-size: 0.9rem;
+
+    background: #faf7f0;
+
+    cursor: pointer;
+
+  }
+
+  .task-item select:focus {
+
+    outline: none;
+
+    border-color: #928953;
+
+  }
+
+
+
+  .task-item button.remove-task {
+
+    background: #b94949;
+
+    border: none;
+
+    color: white;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+    padding: 0 0.5rem;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  .task-item button.remove-task:hover {
+
+    background-color: #8b3333;
+
+  }
+
+
+
+  /* Add task button */
+
+  .add-task-btn {
+
+    margin-top: 0.75rem;
+
+    font-weight: 600;
+
+    background-color: #928953;
+
+    border: none;
+
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 0.5rem 1.2rem;
+
+    cursor: pointer;
+
+    user-select:none;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  .add-task-btn:hover {
+
+    background-color: #6b5e3c;
+
+  }
+
+
+
+  /* ==== OBJECTIFS === */
+
+
+
+  #goalForm {
+
+    display: flex;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    max-width: 500px;
+
+    margin-bottom: 1.5rem;
+
+  }
+
+
+
+  #goalForm input[type="text"],
+
+  #goalForm select {
+
+    padding: 0.4rem 0.6rem;
+
+    border-radius: 6px;
+
+    border: 1.5px solid #b9ad7f;
+
+    flex-grow: 1;
+
+    font-size: 1rem;
+
+  }
+
+  #goalForm button {
+
+    padding: 0.5rem 1.4rem;
+
+    background-color: #928953;
+
+    border: none;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    border-radius: 8px;
+
+    user-select:none;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  #goalForm button:hover {
+
+    background-color: #6b5e3c;
+
+  }
+
+
+
+  #goalList {
+
+    list-style: none;
+
+    padding-left: 0;
+
+  }
+
+  #goalList li {
+
+    background-color: #faf7f0;
+
+    margin-bottom: 0.8rem;
+
+    padding: 0.8rem 1rem;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+
+  }
+
+  #goalList li span.title {
+
+    font-weight: 600;
+
+    color: #6b5e3c;
+
+  }
+
+  #goalList li span.deadline {
+
+    color: #928953;
+
+    font-style: italic;
+
+  }
+
+  #goalList li button.delete-goal {
+
+    background-color: #b94949;
+
+    border: none;
+
+    color: white;
+
+    font-weight: 700;
+
+    padding: 0 10px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    transition: background-color 0.3s ease;
+
+  }
+
+  #goalList li button.delete-goal:hover {
+
+    background-color: #8b3333;
+
+  }
+
+
+
+  /* ==== PROGRESSION === */
+
+
+
+  #progressBars {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1.2rem;
+
+  }
+
+  .progress-container {
+
+    background: #faf7f0;
+
+    border-radius: 12px;
+
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+
+    padding: 1rem 1.2rem;
+
+  }
+
+  .progress-label {
+
+    font-weight: 600;
+
+    color: #6b5e3c;
+
+    margin-bottom: 0.3rem;
+
+    user-select:none;
+
+  }
+
+
+
+  .progress-bar {
+
+    width: 100%;
+
+    height: 20px;
+
+    background-color: #ddd;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: inset 0 0 5px rgb(0 0 0 / 0.1);
+
+    position: relative;
+
+  }
+
+  .progress-bar-fill {
+
+    height: 100%;
+
+    background: linear-gradient(90deg, #a6d785, #4caf50);
+
+    border-radius: 12px 0 0 12px;
+
+    width: 0%;
+
+    transition: width 0.6s ease;
+
+  }
+
+
+
+  /* Notifications area */
+
+  #notifArea {
+
+    background-color: #d6e9c6; /* light green */
+
+    border-radius: 10px;
+
+    padding: 1rem;
+
+    margin-bottom: 1rem;
+
+    color: #3c763d;
+
+    font-weight: 600;
+
+    display: none;
+
+    user-select:none;
+
+  }
+
+
+
+  /* Small responsiveness */
+
+
+
+  @media (max-width: 600px) {
+
+    .time-input-row {
+
+      flex-direction: column;
+
+      align-items: stretch;
+
+    }
+
+    #goalForm {
+
+      flex-direction: column;
+
+    }
+
+  }
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<header>
+
+  <h1>Gestion du Temps d'Écran & Productivité</h1>
+
+</header>
+
+
+
+<main>
+
+
+
+  <div class="tabs" role="tablist" aria-label="Navigation principale">
+
+    <button type="button" class="tab-button active" aria-selected="true" aria-controls="tab-time" id="tabbtn-time">Temps Écran</button>
+
+    <button type="button" class="tab-button" aria-selected="false" aria-controls="tab-agenda" id="tabbtn-agenda">Agenda</button>
+
+    <button type="button" class="tab-button" aria-selected="false" aria-controls="tab-objectifs" id="tabbtn-objectifs">Objectifs</button>
+
+    <button type="button" class="tab-button" aria-selected="false" aria-controls="tab-progression" id="tabbtn-progression">Progression</button>
+
+  </div>
+
+
+
+  <!-- 1. Gestion Temps d'écran -->
+
+  <section id="tab-time" class="content-section active" role="tabpanel" aria-labelledby="tabbtn-time" tabindex="0">
+
+    <h2>Suivi du Temps d'Écran</h2>
+
+    <div class="time-input-row">
+
+      <label for="screenMinutes">Ajouter le temps passé aujourd'hui :</label>
+
+      <input type="number" id="screenMinutes" min="0" max="1440" step="1" aria-describedby="timeHelp" placeholder="minutes" />
+
+      <button id="addTimeBtn" aria-label="Ajouter temps d'écran">Ajouter</button>
+
+    </div>
+
+    <p id="totalTimeDisplay" aria-live="polite" role="status">Total aujourd'hui : 0 min</p>
+
+    <p id="alertMessage" aria-live="assertive" role="alert"></p>
+
+    <small id="timeHelp" style="color:#6b5e3c;">Conseil : 240 minutes (4 heures) est la limite recommandée.</small>
+
+  </section>
+
+
+
+  <!-- 2. Agenda -->
+
+  <section id="tab-agenda" class="content-section" role="tabpanel" aria-labelledby="tabbtn-agenda" tabindex="0">
+
+    <h2>Agenda Hebdomadaire</h2>
+
+    <table id="agendaTable" aria-label="Agenda des tâches de la semaine">
+
+      <thead>
+
+        <tr>
+
+          <th>Jour</th>
+
+          <th>Tâches</th>
+
+          <th><button aria-label="Ajouter tâche à tous les jours" id="addTaskToAllDaysBtn" title="Ajouter une tâche vide à chaque jour" type="button">+ Tâche</button></th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <!-- 7 jours de la semaine générés par JS -->
+
+      </tbody>
+
+    </table>
+
+    <button id="saveAgendaBtn" style="margin-top:1rem;">Enregistrer l'agenda</button>
+
+    <p id="saveMessage" aria-live="polite" style="color:#4b7e28; font-weight: 600; margin-top:6px;"></p>
+
+  </section>
+
+
+
+  <!-- 3. Objectifs -->
+
+  <section id="tab-objectifs" class="content-section" role="tabpanel" aria-labelledby="tabbtn-objectifs" tabindex="0">
+
+    <h2>Gestion des Objectifs</h2>
+
+    <form id="goalForm" aria-label="Formulaire ajout objectif">
+
+      <input type="text" id="goalTitle" placeholder="Nom de l'objectif" aria-required="true" required maxlength="50" />
+
+      <select id="goalDeadline" aria-label="Sélectionner la durée cible en mois">
+
+        <option value="1">1 mois</option>
+
+        <option value="3" selected>3 mois</option>
+
+        <option value="6">6 mois</option>
+
+      </select>
+
+      <input type="number" id="goalTarget" min="1" max="1000" value="1" aria-label="Nombre de tâches à atteindre" required />
+
+      <button type="submit" aria-label="Ajouter objectif">Ajouter</button>
+
+    </form>
+
+
+
+    <ul id="goalList" aria-live="polite" aria-relevant="additions removals"></ul>
+
+  </section>
+
+
+
+  <!-- 4. Progression -->
+
+  <section id="tab-progression" class="content-section" role="tabpanel" aria-labelledby="tabbtn-progression" tabindex="0">
+
+    <h2>Suivi de la Progression</h2>
+
+    <div id="progressBars" aria-live="polite" aria-atomic="true"></div>
+
+  </section>
+
+
+
+  <div id="notifArea" role="alert" aria-live="assertive"></div>
+
+
+
+</main>
+
+
+
+<script>
+
+(() => {
+
+  // --- UTILITAIRES ---
+
+  // Jours de la semaine
+
+  const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+
+
+  // --- GESTION TABS ---
+
+  const tabButtons = document.querySelectorAll('.tab-button');
+
+  const sections = document.querySelectorAll('.content-section');
+
+
+
+  tabButtons.forEach(button => {
+
+    button.addEventListener('click', () => {
+
+      tabButtons.forEach(b => {
+
+        b.classList.toggle('active', b === button);
+
+        b.setAttribute('aria-selected', b === button ? 'true' : 'false');
+
+      });
+
+      sections.forEach(s => s.classList.remove('active'));
+
+      const id = button.getAttribute('aria-controls');
+
+      document.getElementById(id).classList.add('active');
+
+      document.getElementById(id).focus();
+
+    });
+
+  });
+
+
+
+  // --- 1. TEMPS D'ECRAN ---
+
+  const screenMinutesInput = document.getElementById('screenMinutes');
+
+  const addTimeBtn = document.getElementById('addTimeBtn');
+
+  const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+
+  const alertMessage = document.getElementById('alertMessage');
+
+
+
+  const DAILY_LIMIT_MIN = 240; // 4 heures = 240 minutes
+
+
+
+  function loadScreenTime() {
+
+    const saved = localStorage.getItem('screenTimeToday');
+
+    return saved ? parseInt(saved, 10) : 0;
+
+  }
+
+  function saveScreenTime(mins) {
+
+    localStorage.setItem('screenTimeToday', mins.toString());
+
+  }
+
+
+
+  function formatTime(mins) {
+
+    if (mins < 60) return mins + ' min';
+
+    const h = Math.floor(mins / 60);
+
+    const m = mins % 60;
+
+    return m ? `${h}h ${m}min` : `${h}h`;
+
+  }
+
+
+
+  let totalScreenTime = loadScreenTime();
+
+  totalTimeDisplay.textContent = "Total aujourd'hui : " + formatTime(totalScreenTime);
+
+
+
+  addTimeBtn.addEventListener('click', () => {
+
+    const val = parseInt(screenMinutesInput.value, 10);
+
+    if (isNaN(val) || val <= 0 || val > 1440) {
+
+      alertMessage.textContent = "Veuillez entrer un nombre valide de minutes (1-1440).";
+
+      screenMinutesInput.focus();
+
+      return;
+
+    }
+
+    alertMessage.textContent = "";
+
+    totalScreenTime += val;
+
+    saveScreenTime(totalScreenTime);
+
+    totalTimeDisplay.textContent = "Total aujourd'hui : " + formatTime(totalScreenTime);
+
+    screenMinutesInput.value = '';
+
+
+
+    if (totalScreenTime > DAILY_LIMIT_MIN) {
+
+      alertMessage.textContent = "⚠️ Attention : vous avez dépassé la limite recommandée de temps d'écran !";
+
+    }
+
+  });
+
+
+
+  // Reset daily screen time à minuit
+
+  function resetAtMidnight() {
+
+    const now = new Date();
+
+    const msTilMidnight = 
+
+      new Date(now.getFullYear(), now.getMonth(), now.getDate()+1).getTime() - now.getTime();
+
+    setTimeout(() => {
+
+      localStorage.removeItem('screenTimeToday');
+
+      totalScreenTime = 0;
+
+      totalTimeDisplay.textContent = "Total aujourd'hui : 0 min";
+
+      alertMessage.textContent = "";
+
+      resetAtMidnight();
+
+    }, msTilMidnight);
+
+  }
+
+  resetAtMidnight();
+
+
+
+  // --- 2. AGENDA ---
+
+
+
+  const agendaTableBody = document.querySelector('#agendaTable tbody');
+
+  const saveAgendaBtn = document.getElementById('saveAgendaBtn');
+
+  const saveMessage = document.getElementById('saveMessage');
+
+  const addTaskToAllDaysBtn = document.getElementById('addTaskToAllDaysBtn');
+
+
+
+  // Générer tableau agenda avec tâches multiples et sélecteur d'objectif
+
+  function createTaskElement(dayIndex, taskIndex, taskData = {}) {
+
+    // Conteneur tâche
+
+    const taskDiv = document.createElement('div');
+
+    taskDiv.className = 'task-item';
+
+    if (taskData.done) taskDiv.classList.add('done');
+
+
+
+    // Checkbox done
+
+    const checkbox = document.createElement('input');
+
+    checkbox.type = 'checkbox';
+
+    checkbox.checked = !!taskData.done;
+
+    checkbox.setAttribute('aria-label', 'Marquer la tâche comme terminée');
+
+    taskDiv.appendChild(checkbox);
+
+
+
+    // Input titre
+
+    const input = document.createElement('input');
+
+    input.type = 'text';
+
+    input.placeholder = 'Titre de la tâche';
+
+    input.className = 'task-title';
+
+    input.value = taskData.title || '';
+
+    input.setAttribute('aria-label', 'Titre de la tâche');
+
+    taskDiv.appendChild(input);
+
+
+
+    // Select objectif (sera rempli plus bas)
+
+    const select = document.createElement('select');
+
+    select.className = 'task-goal-select';
+
+    select.setAttribute('aria-label', 'Associer un objectif à cette tâche');
+
+    taskDiv.appendChild(select);
+
+
+
+    // Bouton supprimer tâche
+
+    const rmBtn = document.createElement('button');
+
+    rmBtn.textContent = '✕';
+
+    rmBtn.className = 'remove-task';
+
+    rmBtn.title = 'Supprimer cette tâche';
+
+    rmBtn.type = 'button';
+
+    taskDiv.appendChild(rmBtn);
+
+
+
+    rmBtn.addEventListener('click', () => {
+
+      taskDiv.remove();
+
+      updateProgressBars();
+
+    });
+
+
+
+    checkbox.addEventListener('change', () => {
+
+      if (checkbox.checked) taskDiv.classList.add('done');
+
+      else taskDiv.classList.remove('done');
+
+      updateProgressBars();
+
+    });
+
+    input.addEventListener('input', () => {
+
+      updateProgressBars();
+
+    });
+
+    select.addEventListener('change', () => {
+
+      updateProgressBars();
+
+    });
+
+
+
+    return taskDiv;
+
+  }
+
+
+
+  // Générer la structure du tableau agenda
+
+  function buildAgendaTable() {
+
+    agendaTableBody.innerHTML = '';
+
+    days.forEach((day, dayIndex) => {
+
+      const row = document.createElement('tr');
+
+
+
+      // Jour
+
+      const dayCell = document.createElement('td');
+
+      dayCell.textContent = day;
+
+      dayCell.className = 'day-cell';
+
+      dayCell.setAttribute('scope', 'row');
+
+      row.appendChild(dayCell);
+
+
+
+      // Cellules tâches avec container flex column
+
+      const tasksCell = document.createElement('td');
+
+      tasksCell.className = 'tasks-list';
+
+      row.appendChild(tasksCell);
+
+
+
+      // Cellule bouton supplémentaire colonne
+
+      const btnCell = document.createElement('td');
+
+      const addTaskBtn = document.createElement('button');
+
+      addTaskBtn.textContent = '+ Ajouter tâche';
+
+      addTaskBtn.className = 'add-task-btn';
+
+      addTaskBtn.type = 'button';
+
+      btnCell.appendChild(addTaskBtn);
+
+      row.appendChild(btnCell);
+
+
+
+      // Ajout nouvelle tâche au clic
+
+      addTaskBtn.addEventListener('click', () => {
+
+        const taskElem = createTaskElement(dayIndex);
+
+        tasksCell.appendChild(taskElem);
+
+        populateGoalSelects(); // Mettre à jour les selects objectifs
+
+      });
+
+
+
+      agendaTableBody.appendChild(row);
+
+    });
+
+  }
+
+
+
+  // Mise à jour des selects objectifs dans les tâches
+
+  function populateGoalSelects() {
+
+    const goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    const selects = document.querySelectorAll('.task-goal-select');
+
+    selects.forEach(select => {
+
+      const currentVal = select.value;
+
+      select.innerHTML = ''; // Reset
+
+      let emptyOption = document.createElement('option');
+
+      emptyOption.value = '';
+
+      emptyOption.textContent = 'Pas d\'objectif';
+
+      select.appendChild(emptyOption);
+
+      goals.forEach((goal, idx) => {
+
+        const opt = document.createElement('option');
+
+        opt.value = idx;
+
+        opt.textContent = goal.title;
+
+        select.appendChild(opt);
+
+      });
+
+      // Restaurer la valeur sélectionnée si possible
+
+      if (currentVal && [...select.options].some(opt => opt.value === currentVal)) {
+
+        select.value = currentVal;
+
+      } else {
+
+        select.value = '';
+
+      }
+
+    });
+
+  }
+
+
+
+  // Sauvegarder l'agenda complet
+
+  function saveAgenda() {
+
+    const agendaData = [];
+
+    const rows = agendaTableBody.querySelectorAll('tr');
+
+    rows.forEach(row => {
+
+      const taskDivs = row.querySelectorAll('.task-item');
+
+      const tasks = [];
+
+      taskDivs.forEach(taskDiv => {
+
+        const title = taskDiv.querySelector('.task-title').value.trim();
+
+        const goalIndex = taskDiv.querySelector('.task-goal-select').value;
+
+        const done = taskDiv.querySelector('input[type="checkbox"]').checked;
+
+        if (title) {
+
+          tasks.push({ title, goalIndex, done });
+
+        }
+
+      });
+
+      agendaData.push(tasks);
+
+    });
+
+    localStorage.setItem('weeklyAgenda', JSON.stringify(agendaData));
+
+    saveMessage.textContent = "Agenda enregistré !";
+
+    setTimeout(() => (saveMessage.textContent = ''), 3000);
+
+    updateProgressBars();
+
+  }
+
+
+
+  // Charger l'agenda depuis localStorage
+
+  function loadAgenda() {
+
+    const agendaData = JSON.parse(localStorage.getItem('weeklyAgenda'));
+
+    const rows = agendaTableBody.querySelectorAll('tr');
+
+    if (!agendaData || agendaData.length !== rows.length) return;
+
+    rows.forEach((row, i) => {
+
+      const tasksCell = row.querySelector('.tasks-list');
+
+      tasksCell.innerHTML = ''; // reset
+
+      agendaData[i].forEach(task => {
+
+        const taskElem = createTaskElement(i, null, task);
+
+        tasksCell.appendChild(taskElem);
+
+      });
+
+    });
+
+    populateGoalSelects();
+
+  }
+
+
+
+  addTaskToAllDaysBtn.addEventListener('click', () => {
+
+    agendaTableBody.querySelectorAll('tr').forEach(row => {
+
+      const tasksCell = row.querySelector('.tasks-list');
+
+      const taskElem = createTaskElement();
+
+      tasksCell.appendChild(taskElem);
+
+    });
+
+    populateGoalSelects();
+
+  });
+
+
+
+  saveAgendaBtn.addEventListener('click', e => {
+
+    e.preventDefault();
+
+    saveAgenda();
+
+  });
+
+
+
+  buildAgendaTable();
+
+  loadAgenda();
+
+
+
+  // --- 3. OBJECTIFS ---
+
+
+
+  const goalForm = document.getElementById('goalForm');
+
+  const goalTitleInput = document.getElementById('goalTitle');
+
+  const goalDeadlineSelect = document.getElementById('goalDeadline');
+
+  const goalTargetInput = document.getElementById('goalTarget');
+
+  const goalList = document.getElementById('goalList');
+
+
+
+  function loadGoals() {
+
+    const goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    goalList.innerHTML = '';
+
+    goals.forEach((goal, idx) => {
+
+      const li = document.createElement('li');
+
+
+
+      const titleSpan = document.createElement('span');
+
+      titleSpan.className = 'title';
+
+      titleSpan.textContent = goal.title;
+
+      
+
+      const deadlineSpan = document.createElement('span');
+
+      deadlineSpan.className = 'deadline';
+
+      deadlineSpan.textContent = ` • Durée cible: ${goal.deadline} mois • Tâches à atteindre: ${goal.target}`;
+
+
+
+      const delBtn = document.createElement('button');
+
+      delBtn.textContent = 'Supprimer';
+
+      delBtn.className = 'delete-goal';
+
+      delBtn.setAttribute('aria-label', `Supprimer l'objectif ${goal.title}`);
+
+      delBtn.type = 'button';
+
+      delBtn.addEventListener('click', () => {
+
+        deleteGoal(idx);
+
+      });
+
+
+
+      li.appendChild(titleSpan);
+
+      li.appendChild(deadlineSpan);
+
+      li.appendChild(delBtn);
+
+      goalList.appendChild(li);
+
+    });
+
+    populateGoalSelects();
+
+  }
+
+
+
+  goalForm.addEventListener('submit', e => {
+
+    e.preventDefault();
+
+    const title = goalTitleInput.value.trim();
+
+    const deadline = parseInt(goalDeadlineSelect.value, 10);
+
+    const target = parseInt(goalTargetInput.value, 10);
+
+    if (!title || deadline <= 0 || target <= 0) {
+
+      alert("Veuillez remplir tous les champs correctement.");
+
+      return;
+
+    }
+
+    const goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    goals.push({ title, deadline, target });
+
+    localStorage.setItem('goals', JSON.stringify(goals));
+
+    goalTitleInput.value = '';
+
+    goalDeadlineSelect.value = '3';
+
+    goalTargetInput.value = '1';
+
+    loadGoals();
+
+    updateProgressBars();
+
+  });
+
+
+
+  function deleteGoal(idx) {
+
+    const goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    goals.splice(idx, 1);
+
+    localStorage.setItem('goals', JSON.stringify(goals));
+
+    loadGoals();
+
+    updateProgressBars();
+
+  }
+
+
+
+  loadGoals();
+
+
+
+  // --- 4. PROGRESSION ---
+
+
+
+  const progressBarsContainer = document.getElementById('progressBars');
+
+
+
+  function updateProgressBars() {
+
+    progressBarsContainer.innerHTML = '';
+
+    const goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    const agendaData = JSON.parse(localStorage.getItem('weeklyAgenda')) || [];
+
+
+
+    goals.forEach((goal, idx) => {
+
+      // Total tâches liées à cet objectif dans l'agenda
+
+      let totalTasks = 0;
+
+      let doneTasks = 0;
+
+      agendaData.forEach(dayTasks => {
+
+        dayTasks.forEach(task => {
+
+          if (task.goalIndex !== '' && parseInt(task.goalIndex, 10) === idx) {
+
+            totalTasks++;
+
+            if (task.done) doneTasks++;
+
+          }
+
+        });
+
+      });
+
+      // Progrès en % selon target de cet objectif
+
+      const progressPercent = totalTasks ? Math.min((doneTasks / goal.target) * 100, 100) : 0;
+
+
+
+      // Création des barres
+
+      const container = document.createElement('div');
+
+      container.className = 'progress-container';
+
+
+
+      const label = document.createElement('div');
+
+      label.className = 'progress-label';
+
+      label.textContent = `${goal.title} : ${doneTasks} / ${goal.target} tâches terminées`;
+
+
+
+      const bar = document.createElement('div');
+
+      bar.className = 'progress-bar';
+
+
+
+      const fill = document.createElement('div');
+
+      fill.className = 'progress-bar-fill';
+
+      fill.style.width = progressPercent + '%';
+
+
+
+      bar.appendChild(fill);
+
+      container.appendChild(label);
+
+      container.appendChild(bar);
+
+      progressBarsContainer.appendChild(container);
+
+    });
+
+
+
+  }
+
+
+
+  updateProgressBars();
+
+
+
+  // --- NOTIFICATIONS (simple alert style) ---
+
+
+
+  const notifArea = document.getElementById('notifArea');
+
+
+
+  function showNotification(text, duration = 4000) {
+
+    notifArea.textContent = text;
+
+    notifArea.style.display = 'block';
+
+    setTimeout(() => {
+
+      notifArea.style.display = 'none';
+
+      notifArea.textContent = '';
+
+    }, duration);
+
+  }
+
+
+
+  // Exemple : Alerte si tâches non terminées le dimanche (quand onglet progression est affiché)
+
+  function checkUnfinishedTasks() {
+
+    const agendaData = JSON.parse(localStorage.getItem('weeklyAgenda')) || [];
+
+    let unfinishedCount = 0;
+
+    agendaData.forEach(dayTasks => {
+
+      dayTasks.forEach(task => {
+
+        if (task.title && !task.done) unfinishedCount++;
+
+      });
+
+    });
+
+    if (unfinishedCount > 0) {
+
+      showNotification(`Vous avez ${unfinishedCount} tâche(s) non terminée(s). Courage !`);
+
+    }
+
+  }
+
+
+
+  // Vérification lors de l'activation de l'onglet progression
+
+  document.getElementById('tabbtn-progression').addEventListener('click', () => {
+
+    checkUnfinishedTasks();
+
+  });
+
+
+
+})();
+
+</script>
+
+
+
+</body>
+
+</html>
+
+
+
